@@ -1,6 +1,6 @@
 # Sistema de Gestão de Biblioteca
 
-Um sistema completo de gestão de biblioteca desenvolvido em Python com Django e SQLite.
+Um sistema de gestão de biblioteca desenvolvido em Python com Django e SQLite.
 
 ## Funcionalidades
 
@@ -100,102 +100,6 @@ Um sistema completo de gestão de biblioteca desenvolvido em Python com Django e
    ```
 
 5. **Acesse o sistema**
-   Abra o navegador e acesse: `http://localhost:8000`
+   Abra o navegador e acesse: `http://localhost:8000` ou 'http://127.0.0.1:8000'
 
-### Criando um Superusuário (Opcional)
-
-Para acessar o painel administrativo do Django:
-
-```bash
-python manage.py createsuperuser
-```
-
-Depois acesse: `http://localhost:8000/admin`
-
-## Estrutura do Projeto
-
-```
-biblioteca_sistema/
-├── biblioteca/                 # App principal
-│   ├── migrations/            # Migrações do banco
-│   ├── templates/             # Templates HTML
-│   │   └── biblioteca/        # Templates do app
-│   ├── models.py              # Modelos do banco
-│   ├── views.py               # Views/controladores
-│   ├── forms.py               # Formulários
-│   └── urls.py                # URLs do app
-├── biblioteca_sistema/        # Configurações do projeto
-│   ├── settings.py            # Configurações
-│   └── urls.py                # URLs principais
-├── db.sqlite3                 # Banco de dados SQLite
-└── manage.py                  # Script de gerenciamento
-```
-
-## Funcionalidades Implementadas
-
-### ✅ CRUD Completo
-- **C**reate: Criação de usuários, títulos, exemplares e empréstimos
-- **R**ead: Listagem e visualização detalhada de todos os registros
-- **U**pdate: Edição de todos os tipos de registro
-- **D**elete: Exclusão com confirmação
-
-### ✅ Recursos Avançados
-- Sistema de busca em todas as listagens
-- Geração automática de QR Codes para exemplares
-- Controle automático de disponibilidade
-- Identificação de empréstimos em atraso
-- Interface responsiva e moderna
-- Mensagens de feedback para o usuário
-- Validação de formulários
-- Criptografia de senhas
-
-### ✅ Interface de Usuário
-- Design moderno com Bootstrap 5
-- Navegação intuitiva com menus dropdown
-- Painel de controle com estatísticas
-- Ações rápidas na página inicial
-- Tabelas responsivas com ações
-- Formulários bem estruturados
-- Confirmações de exclusão
-
-## Uso do Sistema
-
-### 1. Página Inicial
-- Visualize estatísticas gerais do sistema
-- Acesse ações rápidas para cadastros
-- Navegue pelos menus principais
-
-### 2. Gestão de Usuários
-- Cadastre novos usuários com dados completos
-- Busque usuários por nome, email ou telefone
-- Visualize histórico de empréstimos de cada usuário
-
-### 3. Gestão de Títulos
-- Adicione novos títulos ao acervo
-- Inclua autor e co-autor quando aplicável
-- Visualize todos os exemplares de um título
-
-### 4. Gestão de Exemplares
-- Cadastre exemplares físicos dos títulos
-- Cada exemplar recebe um QR Code único
-- Controle automático de disponibilidade
-
-### 5. Gestão de Empréstimos
-- Registre novos empréstimos facilmente
-- Apenas exemplares disponíveis são exibidos
-- Processe devoluções com um clique
-- Monitore empréstimos em atraso
-
-## Observações Importantes
-
-- O sistema usa SQLite como banco de dados, ideal para desenvolvimento e pequenas instalações
-- As senhas são criptografadas automaticamente
-- QR Codes são gerados automaticamente para cada exemplar
-- O sistema controla automaticamente a disponibilidade dos exemplares
-- Empréstimos em atraso são identificados automaticamente
-- A interface é totalmente responsiva e funciona em dispositivos móveis
-
-## Suporte
-
-Este sistema foi desenvolvido como uma solução completa para gestão de bibliotecas pequenas e médias. Todas as funcionalidades CRUD foram implementadas e testadas com sucesso.
 
