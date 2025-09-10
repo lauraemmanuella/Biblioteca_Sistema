@@ -100,6 +100,6 @@ Um sistema de gestão de biblioteca desenvolvido em Python com Django e SQLite.
    ```
 
 5. **Acesse o sistema**
-   Abra o navegador e acesse: `http://localhost:8000` ou 'http://127.0.0.1:8000'
+   Abra o navegador e acesse: `http://localhost:8000` ou `http://127.0.0.1:8000`
 
 
