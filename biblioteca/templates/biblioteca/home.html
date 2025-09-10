@@ -1,0 +1,186 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Início - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-house"></i> Painel de Controle
+            </h1>
+        </div>
+    </div>
+
+    <!-- Cards de Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-muted">Usuários</h5>
+                            <h2 class="text-primary">{{ total_usuarios }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-people fs-1 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{% url 'usuario_list' %}" class="btn btn-sm btn-outline-primary">
+                            Ver todos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card card-stats success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-muted">Títulos</h5>
+                            <h2 class="text-success">{{ total_titulos }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-journal-bookmark fs-1 text-success"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{% url 'titulo_list' %}" class="btn btn-sm btn-outline-success">
+                            Ver todos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card card-stats warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-muted">Exemplares</h5>
+                            <h2 class="text-warning">{{ total_exemplares }}</h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-book-half fs-1 text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{% url 'exemplar_list' %}" class="btn btn-sm btn-outline-warning">
+                            Ver todos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card card-stats {% if emprestimos_em_atraso > 0 %}danger{% else %}success{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-muted">Empréstimos Ativos</h5>
+                            <h2 class="{% if emprestimos_em_atraso > 0 %}text-danger{% else %}text-success{% endif %}">
+                                {{ emprestimos_ativos }}
+                            </h2>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-arrow-left-right fs-1 {% if emprestimos_em_atraso > 0 %}text-danger{% else %}text-success{% endif %}"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{% url 'emprestimo_list' %}" class="btn btn-sm btn-outline-{% if emprestimos_em_atraso > 0 %}danger{% else %}success{% endif %}">
+                            Ver todos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas -->
+    {% if emprestimos_em_atraso > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle"></i> Atenção!
+                </h4>
+                <p>Existem <strong>{{ emprestimos_em_atraso }}</strong> empréstimo(s) em atraso.</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{% url 'emprestimo_list' %}?status=atrasado" class="btn btn-danger">
+                        Ver empréstimos em atraso
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Ações Rápidas -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-3">Ações Rápidas</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-plus fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title">Novo Usuário</h5>
+                    <p class="card-text">Cadastrar um novo usuário no sistema</p>
+                    <a href="{% url 'usuario_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-plus fs-1 text-success mb-3"></i>
+                    <h5 class="card-title">Novo Título</h5>
+                    <p class="card-text">Adicionar um novo título ao acervo</p>
+                    <a href="{% url 'titulo_create' %}" class="btn btn-success">
+                        <i class="bi bi-plus"></i> Adicionar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-half fs-1 text-warning mb-3"></i>
+                    <h5 class="card-title">Novo Exemplar</h5>
+                    <p class="card-text">Cadastrar um novo exemplar</p>
+                    <a href="{% url 'exemplar_create' %}" class="btn btn-warning">
+                        <i class="bi bi-plus"></i> Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-arrow-right-circle fs-1 text-info mb-3"></i>
+                    <h5 class="card-title">Novo Empréstimo</h5>
+                    <p class="card-text">Realizar um novo empréstimo</p>
+                    <a href="{% url 'emprestimo_create' %}" class="btn btn-info">
+                        <i class="bi bi-plus"></i> Emprestar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

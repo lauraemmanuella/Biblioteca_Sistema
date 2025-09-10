@@ -1,0 +1,147 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Devolver Empréstimo - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-arrow-left-circle"></i> Devolver Empréstimo
+                </h1>
+                <a href="{% url 'emprestimo_detail' emprestimo.id_emprestimo %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-check-circle"></i> Confirmar Devolução
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Informações do Empréstimo -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">Detalhes do Empréstimo</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>ID:</strong> {{ emprestimo.id_emprestimo }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Usuário:</strong> {{ emprestimo.id_usuario.nome }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Email:</strong> {{ emprestimo.id_usuario.email }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Título:</strong> {{ emprestimo.id_exemplar.id_titulo.nome }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Autor:</strong> {{ emprestimo.id_exemplar.id_titulo.autor }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Exemplar:</strong> #{{ emprestimo.id_exemplar.id_exemplar }}
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Data Empréstimo:</strong> {{ emprestimo.data_emprestimo|date:"d/m/Y H:i" }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Previsão Devolução:</strong> 
+                                        <span class="{% if emprestimo.em_atraso %}text-danger{% endif %}">
+                                            {{ emprestimo.previsao_devolucao|date:"d/m/Y" }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status do Empréstimo -->
+                    {% if emprestimo.em_atraso %}
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-exclamation-triangle"></i> Empréstimo em Atraso
+                            </h6>
+                            <p class="mb-0">Este empréstimo está em atraso. A devolução deve ser processada o quanto antes.</p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-check-circle"></i> Empréstimo em Dia
+                            </h6>
+                            <p class="mb-0">Este empréstimo está dentro do prazo previsto.</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulário de Confirmação -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.confirmar_devolucao }}
+                                <label class="form-check-label" for="{{ form.confirmar_devolucao.id_for_label }}">
+                                    {{ form.confirmar_devolucao.label }}
+                                </label>
+                            </div>
+                            {% if form.confirmar_devolucao.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.confirmar_devolucao.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-info-circle"></i> O que acontecerá:
+                            </h6>
+                            <ul class="mb-0">
+                                <li>A data e hora atual serão registradas como devolução</li>
+                                <li>O exemplar ficará disponível para novos empréstimos</li>
+                                <li>Esta ação não pode ser desfeita</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'emprestimo_detail' emprestimo.id_emprestimo %}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-x"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Confirmar Devolução
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

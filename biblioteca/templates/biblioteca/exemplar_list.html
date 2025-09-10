@@ -1,0 +1,132 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Exemplares - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-book-half"></i> Exemplares
+                </h1>
+                <a href="{% url 'exemplar_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Novo Exemplar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário de Busca -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Buscar por título ou autor..." 
+                       value="{{ search }}">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if search %}
+                <a href="{% url 'exemplar_list' %}" class="btn btn-outline-danger ms-2">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de Exemplares -->
+    <div class="row">
+        <div class="col-12">
+            {% if exemplares %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Título</th>
+                                        <th>Autor</th>
+                                        <th>Data Aquisição</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">QR Code</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exemplar in exemplares %}
+                                    <tr>
+                                        <td>{{ exemplar.id_exemplar }}</td>
+                                        <td>
+                                            <a href="{% url 'titulo_detail' exemplar.id_titulo.id_titulo %}" 
+                                               class="text-decoration-none fw-bold">
+                                                {{ exemplar.id_titulo.nome }}
+                                            </a>
+                                        </td>
+                                        <td>{{ exemplar.id_titulo.autor }}</td>
+                                        <td>{{ exemplar.data_aquisicao|date:"d/m/Y" }}</td>
+                                        <td class="text-center">
+                                            {% if exemplar.disponivel %}
+                                                <span class="badge bg-success">Disponível</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Emprestado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if exemplar.qrcode_data %}
+                                                <img src="data:image/png;base64,{{ exemplar.qrcode_data }}" 
+                                                     class="qr-code" alt="QR Code do Exemplar {{ exemplar.id_exemplar }}"
+                                                     title="QR Code do Exemplar {{ exemplar.id_exemplar }}">
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center table-actions">
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'exemplar_detail' exemplar.id_exemplar %}" 
+                                                   class="btn btn-sm btn-outline-info" title="Ver detalhes">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{% url 'exemplar_edit' exemplar.id_exemplar %}" 
+                                                   class="btn btn-sm btn-outline-warning" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'exemplar_delete' exemplar.id_exemplar %}" 
+                                                   class="btn btn-sm btn-outline-danger" title="Excluir">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-book-half fs-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Nenhum exemplar encontrado</h4>
+                        {% if search %}
+                            <p class="text-muted">Sua busca por "{{ search }}" não retornou resultados.</p>
+                            <a href="{% url 'exemplar_list' %}" class="btn btn-secondary">
+                                Ver todos os exemplares
+                            </a>
+                        {% else %}
+                            <p class="text-muted">Comece cadastrando o primeiro exemplar.</p>
+                            <a href="{% url 'exemplar_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus"></i> Cadastrar Exemplar
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

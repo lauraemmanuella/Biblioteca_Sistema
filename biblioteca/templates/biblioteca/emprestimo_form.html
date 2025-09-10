@@ -1,0 +1,115 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}{{ title }} - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-arrow-right{% if emprestimo %}-square{% else %}-circle{% endif %}"></i> {{ title }}
+                </h1>
+                <a href="{% url 'emprestimo_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        {% if emprestimo %}
+                            <i class="bi bi-arrow-right-square"></i> Editar Empréstimo
+                        {% else %}
+                            <i class="bi bi-arrow-right-circle"></i> Novo Empréstimo
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.id_usuario.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Usuário *
+                            </label>
+                            {{ form.id_usuario }}
+                            {% if form.id_usuario.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.id_usuario.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.id_exemplar.id_for_label }}" class="form-label">
+                                <i class="bi bi-book-half"></i> Exemplar Disponível *
+                            </label>
+                            {{ form.id_exemplar }}
+                            <div class="form-text">Apenas exemplares disponíveis são exibidos</div>
+                            {% if form.id_exemplar.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.id_exemplar.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.previsao_devolucao.id_for_label }}" class="form-label">
+                                <i class="bi bi-calendar-event"></i> Previsão de Devolução *
+                            </label>
+                            {{ form.previsao_devolucao }}
+                            <div class="form-text">Data prevista para devolução do exemplar</div>
+                            {% if form.previsao_devolucao.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.previsao_devolucao.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-info-circle"></i> Informações importantes:
+                            </h6>
+                            <ul class="mb-0">
+                                <li>O empréstimo será registrado com a data e hora atual</li>
+                                <li>O exemplar ficará indisponível até a devolução</li>
+                                <li>A data padrão de devolução é 15 dias a partir de hoje</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'emprestimo_list' %}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-x"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check"></i> 
+                                {% if emprestimo %}Atualizar{% else %}Registrar{% endif %} Empréstimo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,114 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Usuários - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-people"></i> Usuários
+                </h1>
+                <a href="{% url 'usuario_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Novo Usuário
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário de Busca -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Buscar por nome, email ou telefone..." 
+                       value="{{ search }}">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if search %}
+                <a href="{% url 'usuario_list' %}" class="btn btn-outline-danger ms-2">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela de Usuários -->
+    <div class="row">
+        <div class="col-12">
+            {% if usuarios %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Telefone</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for usuario in usuarios %}
+                                    <tr>
+                                        <td>{{ usuario.id_usuario }}</td>
+                                        <td>
+                                            <a href="{% url 'usuario_detail' usuario.id_usuario %}" 
+                                               class="text-decoration-none">
+                                                {{ usuario.nome }}
+                                            </a>
+                                        </td>
+                                        <td>{{ usuario.email }}</td>
+                                        <td>{{ usuario.telefone }}</td>
+                                        <td class="text-center table-actions">
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'usuario_detail' usuario.id_usuario %}" 
+                                                   class="btn btn-sm btn-outline-info" title="Ver detalhes">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{% url 'usuario_edit' usuario.id_usuario %}" 
+                                                   class="btn btn-sm btn-outline-warning" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'usuario_delete' usuario.id_usuario %}" 
+                                                   class="btn btn-sm btn-outline-danger" title="Excluir">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-people fs-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Nenhum usuário encontrado</h4>
+                        {% if search %}
+                            <p class="text-muted">Sua busca por "{{ search }}" não retornou resultados.</p>
+                            <a href="{% url 'usuario_list' %}" class="btn btn-secondary">
+                                Ver todos os usuários
+                            </a>
+                        {% else %}
+                            <p class="text-muted">Comece cadastrando o primeiro usuário.</p>
+                            <a href="{% url 'usuario_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus"></i> Cadastrar Usuário
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

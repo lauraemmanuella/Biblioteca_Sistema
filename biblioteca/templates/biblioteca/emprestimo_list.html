@@ -1,0 +1,173 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}Empréstimos - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-arrow-left-right"></i> Empréstimos
+                </h1>
+                <a href="{% url 'emprestimo_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Novo Empréstimo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Busca -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Buscar por usuário ou título..." 
+                       value="{{ search }}">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if search %}
+                <a href="{% url 'emprestimo_list' %}" class="btn btn-outline-danger ms-2">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="btn-group w-100" role="group">
+                <a href="{% url 'emprestimo_list' %}" 
+                   class="btn {% if not status %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    Todos
+                </a>
+                <a href="{% url 'emprestimo_list' %}?status=ativo" 
+                   class="btn {% if status == 'ativo' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    Ativos
+                </a>
+                <a href="{% url 'emprestimo_list' %}?status=atrasado" 
+                   class="btn {% if status == 'atrasado' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                    Em Atraso
+                </a>
+                <a href="{% url 'emprestimo_list' %}?status=devolvido" 
+                   class="btn {% if status == 'devolvido' %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Devolvidos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Empréstimos -->
+    <div class="row">
+        <div class="col-12">
+            {% if emprestimos %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Usuário</th>
+                                        <th>Título</th>
+                                        <th>Data Empréstimo</th>
+                                        <th>Previsão Devolução</th>
+                                        <th>Data Devolução</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for emprestimo in emprestimos %}
+                                    <tr>
+                                        <td>{{ emprestimo.id_emprestimo }}</td>
+                                        <td>
+                                            <a href="{% url 'usuario_detail' emprestimo.id_usuario.id_usuario %}" 
+                                               class="text-decoration-none">
+                                                {{ emprestimo.id_usuario.nome }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'titulo_detail' emprestimo.id_exemplar.id_titulo.id_titulo %}" 
+                                               class="text-decoration-none">
+                                                {{ emprestimo.id_exemplar.id_titulo.nome }}
+                                            </a>
+                                            <small class="text-muted d-block">
+                                                Exemplar #{{ emprestimo.id_exemplar.id_exemplar }}
+                                            </small>
+                                        </td>
+                                        <td>{{ emprestimo.data_emprestimo|date:"d/m/Y H:i" }}</td>
+                                        <td>{{ emprestimo.previsao_devolucao|date:"d/m/Y" }}</td>
+                                        <td>
+                                            {% if emprestimo.data_devolucao %}
+                                                {{ emprestimo.data_devolucao|date:"d/m/Y H:i" }}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if emprestimo.data_devolucao %}
+                                                <span class="badge bg-success">Devolvido</span>
+                                            {% elif emprestimo.em_atraso %}
+                                                <span class="badge bg-danger">Em Atraso</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Em Empréstimo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center table-actions">
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'emprestimo_detail' emprestimo.id_emprestimo %}" 
+                                                   class="btn btn-sm btn-outline-info" title="Ver detalhes">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                {% if not emprestimo.data_devolucao %}
+                                                    <a href="{% url 'emprestimo_devolver' emprestimo.id_emprestimo %}" 
+                                                       class="btn btn-sm btn-outline-success" title="Devolver">
+                                                        <i class="bi bi-check-circle"></i>
+                                                    </a>
+                                                {% endif %}
+                                                <a href="{% url 'emprestimo_edit' emprestimo.id_emprestimo %}" 
+                                                   class="btn btn-sm btn-outline-warning" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'emprestimo_delete' emprestimo.id_emprestimo %}" 
+                                                   class="btn btn-sm btn-outline-danger" title="Excluir">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-arrow-left-right fs-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Nenhum empréstimo encontrado</h4>
+                        {% if search %}
+                            <p class="text-muted">Sua busca por "{{ search }}" não retornou resultados.</p>
+                            <a href="{% url 'emprestimo_list' %}" class="btn btn-secondary">
+                                Ver todos os empréstimos
+                            </a>
+                        {% elif status %}
+                            <p class="text-muted">Nenhum empréstimo encontrado com o status "{{ status }}".</p>
+                            <a href="{% url 'emprestimo_list' %}" class="btn btn-secondary">
+                                Ver todos os empréstimos
+                            </a>
+                        {% else %}
+                            <p class="text-muted">Comece realizando o primeiro empréstimo.</p>
+                            <a href="{% url 'emprestimo_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus"></i> Novo Empréstimo
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
