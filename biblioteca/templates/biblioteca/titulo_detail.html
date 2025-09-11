@@ -1,0 +1,155 @@
+{% extends 'biblioteca/base.html' %}
+
+{% block title %}{{ titulo.nome }} - Sistema de Gestão de Biblioteca{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-journal-bookmark"></i> Detalhes do Título
+                </h1>
+                <div>
+                    <a href="{% url 'titulo_edit' titulo.id_titulo %}" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                    <a href="{% url 'titulo_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Informações do Título -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle"></i> Informações do Título
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>ID:</strong> {{ titulo.id_titulo }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Nome:</strong> {{ titulo.nome }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Autor:</strong> {{ titulo.autor }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Co-autor:</strong> 
+                        {% if titulo.co_autor %}
+                            {{ titulo.co_autor }}
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Data de Cadastro:</strong> {{ titulo.data_cadastro|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exemplares Associados -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-book-half"></i> Exemplares Associados
+                    </h5>
+                    <span class="badge bg-info">{{ exemplares.count }} exemplar(es)</span>
+                </div>
+                <div class="card-body">
+                    {% if exemplares %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID Exemplar</th>
+                                        <th>Data Aquisição</th>
+                                        <th>Status</th>
+                                        <th>QR Code</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exemplar in exemplares %}
+                                    <tr>
+                                        <td>{{ exemplar.id_exemplar }}</td>
+                                        <td>{{ exemplar.data_aquisicao|date:"d/m/Y" }}</td>
+                                        <td>
+                                            {% if exemplar.disponivel %}
+                                                <span class="badge bg-success">Disponível</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Emprestado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if exemplar.qrcode_data %}
+                                                <img src="data:image/png;base64,{{ exemplar.qrcode_data }}" 
+                                                     class="qr-code" alt="QR Code do Exemplar {{ exemplar.id_exemplar }}"
+                                                     title="QR Code do Exemplar {{ exemplar.id_exemplar }}">
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'exemplar_detail' exemplar.id_exemplar %}" 
+                                               class="btn btn-sm btn-outline-info" title="Ver detalhes">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-book-half fs-1 text-muted mb-3"></i>
+                            <h6 class="text-muted">Nenhum exemplar associado a este título.</h6>
+                            <p class="text-muted">Você pode adicionar um novo exemplar para este título.</p>
+                            <a href="{% url 'exemplar_create' %}?titulo={{ titulo.id_titulo }}" class="btn btn-primary">
+                                <i class="bi bi-plus"></i> Adicionar Exemplar
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-gear"></i> Ações
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'exemplar_create' %}?titulo={{ titulo.id_titulo }}" class="btn btn-success">
+                            <i class="bi bi-plus"></i> Adicionar Novo Exemplar
+                        </a>
+                        <a href="{% url 'titulo_edit' titulo.id_titulo %}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Editar Título
+                        </a>
+                        <a href="{% url 'titulo_delete' titulo.id_titulo %}" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Excluir Título
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
